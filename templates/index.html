@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Parse acknowldgements</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        $(function() {
+            $('form').submit(function(event) {
+                event.preventDefault();
+                var query = $('#query').val();
+                $.ajax({
+                    type: 'GET',
+                    url: '/process',
+                    data: { q: query },
+                    success: function(data) {
+                        $('#results').empty();
+                        $.each(data, function(index, value) {
+                            $('#results').append('<li class="list-group-item">' + value + '</li>');
+                        });
+                    },
+                    error: function() {
+                        alert('An error occurred while fetching search results.');
+                    }
+                });
+            });
+        });
+    </script>
+</head>
+<body>
+    <div class="container">
+        <h1 class="mt-5 mb-3">Parse acknowldgements</h1>
+        <form class="form-inline">
+            <div class="form-group mb-3">
+                <label for="query" class="sr-only">Query:</label>
+                <input type="text" class="form-control form-control-lg" id="query" name="query" placeholder="Enter search query" required>
+            </div>
+            <button type="submit" class="btn btn-primary mb-3">Parse</button>
+        </form>
+        <h2 class="mt-5 mb-3">Funding information:</h2>
+        <ul id="results" class="list-group"></ul>
+    </div>
+</body>
+</html>
