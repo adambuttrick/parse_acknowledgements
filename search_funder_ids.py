@@ -33,7 +33,7 @@ def search_ror(org_name):
 				ror_name = record['name']
 				if result['chosen'] == True:
 					if 'FundRef' in record['external_ids'].keys():
-						funder_id = record['external_ids']['FundRef']['all'][0]
+						funder_id = f"http://dx.doi.org/10.13039/{record['external_ids']['FundRef']['all'][0]}"
 						return [{"type": "ror", "id": ror_id, "name":ror_name}, {"type": "funder_registry", "id": funder_id, "name":ror_name}]
 					else:
 						return [{"type": "ror", "id": ror_id, "name":ror_name}]
@@ -49,7 +49,7 @@ def search_ror(org_name):
 							org_name), normalize_text(ror_name))
 						if name_mr >= 95:
 							if 'FundRef' in record['external_ids'].keys():
-								funder_id = record['external_ids']['FundRef']['all'][0]
+								funder_id = f"http://dx.doi.org/10.13039/{record['external_ids']['FundRef']['all'][0]}"
 								ror_matches[name_mr] = [ror_id, ror_name, funder_id]
 							else:
 								ror_matches[name_mr] = [ror_id, ror_name]
@@ -65,10 +65,10 @@ def search_ror(org_name):
 
 
 def is_like_identifier(s):
-    pattern = "^(?=.*[0-9])(?=.*[A-Z])[A-Z0-9\s\\-]+$"
-    if re.match(pattern, s):
-        return True
-    return False
+	pattern = "^(?=.*[0-9])(?=.*[A-Z])[A-Z0-9\s\\-]+$"
+	if re.match(pattern, s):
+		return True
+	return False
 
 
 def search_funder_ids(parsed_funders):
@@ -79,6 +79,5 @@ def search_funder_ids(parsed_funders):
 		matches = search_ror(org_name)
 		if matches != None:
 			funder['ids'] = matches
-	parsed_funders = [str(funder) for funder in parsed_funders]
 	return parsed_funders
 

@@ -4,28 +4,42 @@
     <title>Parse acknowldgements</title>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <script>
-        $(function() {
-            $('form').submit(function(event) {
-                event.preventDefault();
-                var query = $('#query').val();
-                $.ajax({
-                    type: 'GET',
-                    url: '/process',
-                    data: { q: query },
-                    success: function(data) {
-                        $('#results').empty();
-                        $.each(data, function(index, value) {
-                            $('#results').append('<li class="list-group-item">' + value + '</li>');
-                        });
-                    },
-                    error: function() {
-                        alert('An error occurred while fetching search results.');
-                    }
-                });
+<script>
+    $(function() {
+        $('form').submit(function(event) {
+            event.preventDefault();
+            var query = $('#query').val();
+            $.ajax({
+                type: 'GET',
+                url: '/process',
+                data: { q: query },
+                success: function(data) {
+                    $('#results').empty();
+                    $.each(data, function(index, funderData) {
+                        var resultHTML = '<li class="list-group-item">';
+                        resultHTML += '<h5>Funder: ' + funderData.funder + '</h5>';
+                        if(funderData.grants && funderData.grants.length > 0) {
+                            resultHTML += '<p>Grants: ' + funderData.grants.join(', ') + '</p>';
+                        }
+                        if(funderData.ids && funderData.ids.length > 0) {
+                            var ids = [];
+                            $.each(funderData.ids, function(index, idData) {
+                                ids.push('<a href="' + idData.id + '" target="_blank">' + idData.id + '</a>');
+                            });
+                            resultHTML += '<p>IDs: ' + ids.join(', ') + '</p>';
+                        }
+                        resultHTML += '</li>';
+                        $('#results').append(resultHTML);
+                    });
+                },
+                error: function() {
+                    alert('An error occurred while fetching search results.');
+                }
             });
         });
-    </script>
+    });
+</script>
+
 </head>
 <body>
     <div class="container">
